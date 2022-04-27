@@ -1,43 +1,23 @@
 package br.com.serratec.entidade;
 
-public class Funcionario {
-    public abstract class Funcionario extends Cliente {
-        protected double salario;
+public abstract class Funcionario extends Usuario {
+	
+	protected TipoCargo cargo;
+	
+        public Funcionario(String cpf, String nome, String senha, TipoCargo cargo) {
+		super(cpf, nome, senha);
+		this.cargo = cargo;
+	
+	}
 
-        public void setSalario(double salario) {
+		public TipoCargo getCargo() {
+			return cargo;
+		}
 
-            this.salario = salario;
-        }
+		public void setCargo(TipoCargo cargo) {
+			this.cargo = cargo;
+		}
 
-        public Funcionario(String nome) {
-
-            this.nome = nome;
-        }
-
-        public String getNome() {
-
-            return nome;
-        }
-
-        public void setNome(String nome) {
-
-            this.nome = nome;
-        }
-
-        public int getCpf() {
-
-            return cpf;
-        }
-
-        public void setCpf(int cpf) {
-
-            this.cpf = cpf;
-        }
-
-        public double getSalario() {
-
-            return salario;
-        }
-
+	
 
     }

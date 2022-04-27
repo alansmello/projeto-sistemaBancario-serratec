@@ -7,6 +7,12 @@ public abstract class Conta {
 	protected String cpfTitular;
 	protected double saldo;
 	
+	public Conta(int numero, int agencia, String cpfTitular, double saldo) {
+		this.numero = numero;
+		this.agencia = agencia;
+		this.cpfTitular = cpfTitular;
+		this.saldo = saldo;
+	}
 	
 	public int getNumero() {
 		return numero;

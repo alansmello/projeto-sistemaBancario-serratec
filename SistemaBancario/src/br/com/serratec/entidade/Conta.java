@@ -58,7 +58,7 @@ public abstract class Conta {
 		
 		if(this.saldo >= valor + taxa) {
 			this.saldo -= valor + taxa;
-			contaDestino.depositar(valor+taxa);
+			contaDestino.depositar(valor+TipoTaxa.DEPOSITO.getValorTaxa());
 			return true;
 		}
 		

@@ -1,6 +1,8 @@
 package br.com.serratec.entidade.contas;
 
 import br.com.serratec.entidade.enums.TipoTaxa;
+import br.com.serratec.entidade.excecoes.ValorInsuficienteException;
+import br.com.serratec.entidade.excecoes.ValorNegativoException;
 
 public abstract class Conta {
 	protected int numero;
@@ -36,12 +38,15 @@ public abstract class Conta {
 		return saldo;
 	}
 	
-	public void depositar(double valor) {
+	public void depositar(double valor) throws ValorNegativoException, ValorInsuficienteException {
 		double taxa = TipoTaxa.DEPOSITO.getValorTaxa();
 		
-		if(valor >= taxa) {
-			this.saldo += valor - taxa;
+		if(valor < 0) {
+			throw new ValorNegativoException();
+		}else if(valor < taxa) {
+			throw new ValorInsuficienteException();
 		}
+		this.saldo += valor - taxa;
 	}
 	
 	public boolean sacar(double valor) {
@@ -55,7 +60,7 @@ public abstract class Conta {
 		return false;
 	}
 	
-	public boolean transferir(double valor, Conta contaDestino) {
+	public boolean transferir(double valor, Conta contaDestino) throws ValorNegativoException, ValorInsuficienteException {
 		double taxa = TipoTaxa.TRANSFERENCIA.getValorTaxa();
 		
 		if(this.saldo >= valor + taxa) {

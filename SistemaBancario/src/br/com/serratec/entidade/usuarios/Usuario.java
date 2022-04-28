@@ -1,4 +1,4 @@
-package br.com.serratec.entidade;
+package br.com.serratec.entidade.usuarios;
 
 public abstract class Usuario {
 

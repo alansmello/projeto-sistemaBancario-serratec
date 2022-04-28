@@ -1,4 +1,4 @@
-package br.com.serratec.entidade;
+package br.com.serratec.entidade.enums;
 
 public enum TipoTaxa {
 	SAQUE(0.10),

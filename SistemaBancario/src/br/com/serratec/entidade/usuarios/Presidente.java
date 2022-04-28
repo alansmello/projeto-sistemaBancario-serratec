@@ -1,4 +1,6 @@
-package br.com.serratec.entidade;
+package br.com.serratec.entidade.usuarios;
+
+import br.com.serratec.entidade.enums.TipoCargo;
 
 public class Presidente extends Funcionario {
 

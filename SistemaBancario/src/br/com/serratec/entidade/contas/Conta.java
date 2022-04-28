@@ -1,4 +1,6 @@
-package br.com.serratec.entidade;
+package br.com.serratec.entidade.contas;
+
+import br.com.serratec.entidade.enums.TipoTaxa;
 
 public abstract class Conta {
 	protected int numero;

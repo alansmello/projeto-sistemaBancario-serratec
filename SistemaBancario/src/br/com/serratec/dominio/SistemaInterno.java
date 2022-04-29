@@ -4,6 +4,7 @@ import java.io.IOException;
 
 import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
 import br.com.serratec.entidade.excecoes.cadastroExisteException;
+import br.com.serratec.entidade.repositorios.RepositorioContas;
 import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
 
 public class SistemaInterno {
@@ -13,7 +14,7 @@ public class SistemaInterno {
 		System.out.println("Data de Expiração: " + s1.getDataExpiracao());
 
 	}*/
-		try {
+		/*try {
 			RepositorioUsuarios.usuarioLoader();
 		} catch (Exception e) {
 			System.out.println(e);
@@ -24,9 +25,20 @@ public class SistemaInterno {
 		} catch (CadastroInexistenteException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}*/
+		
+		try {
+			RepositorioContas.contasLoader();
+		} catch (Exception e) {
+			System.out.println(e);
 		}
 		
-		
+		try {
+			System.out.println(RepositorioContas.pesquisaContas("9515111551"));
+		} catch (CadastroInexistenteException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 
 	
 

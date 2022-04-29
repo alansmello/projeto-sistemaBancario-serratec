@@ -60,12 +60,12 @@ public abstract class Conta {
 		return false;
 	}
 	
-	public boolean transferir(double valor, Conta contaDestino) throws ValorNegativoException, ValorInsuficienteException {
+	public boolean transferir(double valor, Conta contaDestino) {
 		double taxa = TipoTaxa.TRANSFERENCIA.getValorTaxa();
 		
 		if(this.saldo >= valor + taxa) {
 			this.saldo -= valor + taxa;
-			contaDestino.depositar(valor+TipoTaxa.DEPOSITO.getValorTaxa());
+			contaDestino.saldo += valor;
 			return true;
 		}
 		

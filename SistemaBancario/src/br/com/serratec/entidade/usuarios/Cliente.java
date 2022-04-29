@@ -6,6 +6,11 @@ public class Cliente extends Usuario{
 		super(cpf, nome, senha);
 		
 	}
+
+	@Override
+	public String toString() {
+		return "Cliente [cpf=" + cpf + ", nome=" + nome + ", senha=" + senha + "]";
+	}
 	
 	
    

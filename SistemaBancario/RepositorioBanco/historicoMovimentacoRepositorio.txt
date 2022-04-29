@@ -1,0 +1,9 @@
+deposito;09542;500.0;c
+deposito;09542;500.0;c
+deposito;00000;350.0;c
+saque;02200000;250.0;c
+transferencia;56565;2501.0;c;56565
+transferencia;56565;2501.0;ctransferencia;56565;2501.0;c;56565
+transferencia;56565;2501.0;c;56565
+transferencia;56565;2501.0;c;56565
+transferencia;56565;2501.0;c;333333

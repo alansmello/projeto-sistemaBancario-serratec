@@ -1,5 +1,10 @@
 package br.com.serratec.entidade.contas;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 import br.com.serratec.entidade.enums.TipoTaxa;
 import br.com.serratec.entidade.excecoes.ValorInsuficienteException;
 import br.com.serratec.entidade.excecoes.ValorNegativoException;
@@ -47,6 +52,13 @@ public abstract class Conta {
 			throw new ValorInsuficienteException();
 		}
 		this.saldo += valor - taxa;
+		try {
+			registraTransacao(valor, "deposito");
+		} catch (IOException e) {
+			
+			e.printStackTrace();
+		}
+		
 	}
 	
 	public boolean sacar(double valor) {
@@ -54,6 +66,13 @@ public abstract class Conta {
 		
 		if(this.saldo >= valor + taxa) {
 			this.saldo -= valor + taxa;
+			
+			try {
+				registraTransacao(valor, "saque");
+			} catch (IOException e) {
+				
+				e.printStackTrace();
+			}
 			return true;
 		}
 		
@@ -66,9 +85,48 @@ public abstract class Conta {
 		if(this.saldo >= valor + taxa) {
 			this.saldo -= valor + taxa;
 			contaDestino.saldo += valor;
+			
+			try {
+				registraTransacao(valor, "transferencia", contaDestino.cpfTitular);
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
 			return true;
 		}
 		
 		return false;
 	}
+	
+	protected void registraTransacao(double valor, String tipoTransacao, String... cpfDestinatario) throws IOException {
+        File pastaHistoricoMovimentacao = new File ("RepositorioBanco");
+        File HistoricoMovimentacao = new File (pastaHistoricoMovimentacao.getAbsolutePath() + "/historicoMovimentacoRepositorio.txt");
+
+        if (!pastaHistoricoMovimentacao.exists()) {
+        	pastaHistoricoMovimentacao.mkdirs();
+        }
+
+        if(!HistoricoMovimentacao.exists()) {
+        	HistoricoMovimentacao.createNewFile();
+        }
+
+        try(FileWriter historicoMovimentacaoEscrever = new FileWriter(HistoricoMovimentacao, true);
+            BufferedWriter historicoMovimentacaoEscreverBFF = new BufferedWriter(historicoMovimentacaoEscrever)) {
+
+        	historicoMovimentacaoEscreverBFF.append(tipoTransacao + ";" + this.cpfTitular + ";" + valor + ";");
+            if (this instanceof ContaCorrente) {
+            	historicoMovimentacaoEscreverBFF.append("c");
+            } else if (this instanceof ContaPoupanca) {
+            	historicoMovimentacaoEscreverBFF.append("p");
+            }
+            if (!(cpfDestinatario.length == 0)) {
+            	historicoMovimentacaoEscreverBFF.append(";" + cpfDestinatario[0]);
+            }
+            historicoMovimentacaoEscreverBFF.newLine();
+            
+            System.out.println("transacao registrada");
+
+        } catch (IOException e) {
+            System.out.println("Erro de escrita de arquivos!");
+        }
+    }
 }

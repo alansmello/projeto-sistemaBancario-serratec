@@ -2,14 +2,23 @@ package br.com.serratec.dominio;
 
 import java.io.IOException;
 
-import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
+import br.com.serratec.entidade.contas.ContaCorrente;
+import br.com.serratec.entidade.excecoes.ValorInsuficienteException;
+import br.com.serratec.entidade.excecoes.ValorNegativoException;
 import br.com.serratec.entidade.excecoes.cadastroExisteException;
-import br.com.serratec.entidade.repositorios.RepositorioContas;
-import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
 
 public class SistemaInterno {
 
 	public static void main(String[] args) throws IOException, cadastroExisteException {
+		
+		ContaCorrente c4 = new ContaCorrente (2541, 2545, "56565", 10000);
+		ContaCorrente c5 = new ContaCorrente (254, 541, "333333", 10000);
+		c4.transferir(2501, c5);
+		
+		
+		
+		
+		
 		/**SegurodeVida s1 = new SegurodeVida (100.00, "1648745125");
 		System.out.println("Data de Expiração: " + s1.getDataExpiracao());
 
@@ -26,7 +35,7 @@ public class SistemaInterno {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}*/
-		
+		/*
 		try {
 			RepositorioContas.contasLoader();
 		} catch (Exception e) {
@@ -41,7 +50,7 @@ public class SistemaInterno {
 		}
 
 	
-
+*/
 	}
 }
 

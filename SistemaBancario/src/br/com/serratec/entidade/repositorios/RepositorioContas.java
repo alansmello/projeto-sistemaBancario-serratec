@@ -4,13 +4,15 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 import br.com.serratec.entidade.contas.Conta;
-import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
-import br.com.serratec.entidade.excecoes.cadastroExisteException;
 import br.com.serratec.entidade.contas.ContaCorrente;
 import br.com.serratec.entidade.contas.ContaPoupanca;
+import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
+import br.com.serratec.entidade.excecoes.cadastroExisteException;
 
 public class RepositorioContas {
 
@@ -57,7 +59,7 @@ public class RepositorioContas {
 			}
 		} while (true);
 		
-		System.out.println(contasLista);
+		
 
 		leitorContas.close();
 		leitorContasBff.close();
@@ -70,4 +72,24 @@ public class RepositorioContas {
 		}
 		return contaPesquisada;
 	}
+	
+	  public static List<Conta> getContaCorrenteAgencia(int agencia) {
+
+	        // Criando a lista que vou retornar pro meu gerente
+	        List<Conta> listaFiltrada = new ArrayList<>();
+
+	        // Percorrendo cada uma das contas do banco
+	        for (Conta conta : contasLista.values()) {
+	            // Pra cada conta, vou percorrer todas as agências que eu pedi na chamada da função
+	            //for (String ag : agencia) {
+	                // Verificar se qualquer uma dela é igual a agência da conta corrente atual em que estou
+	                if (conta.getAgencia()== agencia) {
+	                    listaFiltrada.add(conta);
+	                }
+	            }
+	        
+	        return listaFiltrada;
+	    }
+	
+
 }

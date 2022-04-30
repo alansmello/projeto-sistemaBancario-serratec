@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.List;
 
 import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
 import br.com.serratec.entidade.excecoes.cadastroExisteException;
@@ -75,6 +76,9 @@ public class  RepositorioUsuarios {
 		leitorUsuarioBff.close();
 		
 	}
+	 public static List<Usuario> getUsuarios() {
+	        return (List<Usuario>) usuarioLista.values();
+	    }
 	
 	public static Usuario pesquisaUsuario(String cpf) throws CadastroInexistenteException {
 		Usuario usuarioPesquisado = usuarioLista.get(cpf);

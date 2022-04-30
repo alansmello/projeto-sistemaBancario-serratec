@@ -1,6 +1,6 @@
 package br.com.serratec.entidade.usuarios;
 
-public abstract class Usuario {
+public abstract class Usuario implements Comparable<Usuario>{
 
 	protected String cpf;
 	protected String nome;
@@ -34,4 +34,11 @@ public abstract class Usuario {
 	        }
 
 	 	}
+
+	@Override
+	public int compareTo(Usuario o) {
+		// TODO Auto-generated method stub
+		return this.nome.compareTo(o.nome);
+	}
+	 
 }

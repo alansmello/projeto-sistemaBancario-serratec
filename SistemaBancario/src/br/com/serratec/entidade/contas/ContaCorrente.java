@@ -12,6 +12,9 @@ import java.time.format.DateTimeFormatter;
 
 import br.com.serratec.entidade.enums.TipoTaxa;
 import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
+import br.com.serratec.entidade.excecoes.CpfInexistenteException;
+import br.com.serratec.entidade.excecoes.SeguroExistenteException;
+import br.com.serratec.entidade.repositorios.RepositorioSeguroVida;
 import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
 
 public class ContaCorrente extends Conta {
@@ -27,6 +30,19 @@ public class ContaCorrente extends Conta {
 		if((valorSegurado * TipoTaxa.SEGURO.getValorTaxa())  <= super.saldo) {
 			this.segurodeVida = new SegurodeVida(valorSegurado, super.cpfTitular);
 			super.saldo -= valorSegurado * TipoTaxa.SEGURO.getValorTaxa();
+			try {
+				registraTransacao(valorSegurado, "segurovida");
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			SegurodeVida seguroVidaTemporario = new SegurodeVida(valorSegurado,this.cpfTitular);
+	        try {
+				RepositorioSeguroVida.adicionaSeguroVida(seguroVidaTemporario);
+			} catch (SeguroExistenteException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return true;
 		}else {
 			return false;
@@ -34,9 +50,9 @@ public class ContaCorrente extends Conta {
 		
 	}
 	
-	 public void RelatorioTributos() throws IOException, CadastroInexistenteException {
+	 public void RelatorioTributos() throws IOException, CadastroInexistenteException, CpfInexistenteException {
 		 
-	        LocalDateTime hora = LocalDateTime.now();
+	        LocalDateTime hoje = LocalDateTime.now();
 	        DateTimeFormatter brasilForma = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
 	        DateTimeFormatter bdForma = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
 
@@ -79,8 +95,8 @@ public class ContaCorrente extends Conta {
 	            System.out.println("Erro de leitura de arquivos");
 	        }
 
-	        File pastaRelatorioContaCorrenteTributos = new File("C:\\RepositorioBanco\\Relatorios\\Clientes\\");
-	        File relatorioContaCorrenteTributos = new File(pastaRelatorioContaCorrenteTributos.getAbsolutePath() + "/" + this.cpfTitular + " " + bdForma.format(hora) + ".txt");
+	        File pastaRelatorioContaCorrenteTributos = new File("RepositorioBanco/Relatorios/Clientes/");
+	        File relatorioContaCorrenteTributos = new File(pastaRelatorioContaCorrenteTributos.getAbsolutePath() + "/" + this.cpfTitular + " " + bdForma.format(hoje) + ".txt");
 
 	        if (!pastaRelatorioContaCorrenteTributos.exists()) {
 	        	pastaRelatorioContaCorrenteTributos.mkdirs();
@@ -93,33 +109,37 @@ public class ContaCorrente extends Conta {
 	        try (FileWriter relatorioContaCorrenteTributosEscrita = new FileWriter(relatorioContaCorrenteTributos);
 	             BufferedWriter relatorioContaCorrenteTributosEscritaBuffer = new BufferedWriter(relatorioContaCorrenteTributosEscrita)) {
 
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Relatório Conta Corrente - Tributos - " + brasilForma.format(hora));
+	        	relatorioContaCorrenteTributosEscritaBuffer.append("Relatório Conta Corrente - Tributos - " + brasilForma.format(hoje));
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Nome: " + RepositorioUsuarios.pesquisaUsuario(this.cpfTitular).getNome()+ "/ CPF: " + this.cpfTitular);
+	        	relatorioContaCorrenteTributosEscritaBuffer.append("Nome: " + RepositorioUsuarios.getUsuario(this.cpfTitular).getNome()+ "/ CPF: " + this.cpfTitular);
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Total gasto com taxas de saque: R$ " + String.format("%.2f", totalTaxasSaque));
+	        	relatorioContaCorrenteTributosEscritaBuffer.append("Total taxas:");
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Total gasto com taxas de depósito: R$ " + String.format("%.2f", totalTaxasDeposito));
+	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxas saque: R$ " + String.format("%.2f", totalTaxasSaque));
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Total gasto com taxas de transferência: R$ " + String.format("%.2f", totalTaxasTransferencia));
+	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxas depósito: R$ " + String.format("%.2f", totalTaxasDeposito));
+	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
+	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxas transferência: R$ " + String.format("%.2f", totalTaxasTransferencia));
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
 	        	relatorioContaCorrenteTributosEscritaBuffer.append("--------//--------");
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-/*
+
 	            try {
-	                SegurodeVida seguroVidaAtual = SeguroVidaRepositorio.getSeguroVida(this.cpfTitular);
-	                relatorioTributacaoContaCorrenteWriterBuff.append("Valor pago até o momento do seguro de vida: R$ " + String.format("%.2f", seguroVidaAtual.getValorPago()));
-	                relatorioTributacaoContaCorrenteWriterBuff.newLine();
-	                relatorioTributacaoContaCorrenteWriterBuff.append("Mensalidade do seguro de vida: R$ " + String.format("%.2f", seguroVidaAtual.calculaMensalidade()));
-	                relatorioTributacaoContaCorrenteWriterBuff.newLine();
-	                relatorioTributacaoContaCorrenteWriterBuff.append("Valor contratado do seguro de vida: R$ " + String.format("%.2f", seguroVidaAtual.getValorSegurado()));
-	                relatorioTributacaoContaCorrenteWriterBuff.newLine();
-	                relatorioTributacaoContaCorrenteWriterBuff.append("--------//--------");
-	                relatorioTributacaoContaCorrenteWriterBuff.newLine();
+	                SegurodeVida seguroVidaAtual = RepositorioSeguroVida.getSeguroVida(this.cpfTitular);
+	                relatorioContaCorrenteTributosEscritaBuffer.append("SEGURO DE VIDA");
+	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
+	                relatorioContaCorrenteTributosEscritaBuffer.append("Valor contratado: R$ " + String.format("%.2f", seguroVidaAtual.getValorSegurado()));
+	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
+	                relatorioContaCorrenteTributosEscritaBuffer.append("Data Expiração: R$ " + seguroVidaAtual.getDataExpiracao());
+	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
+	                relatorioContaCorrenteTributosEscritaBuffer.append("Taxa de Seguro de Vida: R$ " + String.format("%.2f", seguroVidaAtual.getValorSegurado() * TipoTaxa.SEGURO.getValorTaxa()));
+	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
+	                relatorioContaCorrenteTributosEscritaBuffer.append("--------//--------");
+	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
 	            } catch (CpfInexistenteException e) {
 
-	            }*/
+	            }
 
 	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxas:");
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
@@ -127,7 +147,7 @@ public class ContaCorrente extends Conta {
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
 	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxa para depósito: R$ " + String.format("%.2f", TipoTaxa.DEPOSITO.getValorTaxa()));
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxa para transferência: R$ " + String.format("%.2f", TipoTaxa.TRANSFERENCIA));
+	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxa para transferência: R$ " + String.format("%.2f", TipoTaxa.TRANSFERENCIA.getValorTaxa()));
 	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
 
 	        } catch (IOException  e) {

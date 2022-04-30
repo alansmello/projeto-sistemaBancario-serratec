@@ -4,7 +4,7 @@ public enum TipoTaxa {
 	SAQUE(0.10),
 	DEPOSITO(0.10),
 	TRANSFERENCIA(0.20),
-	RENDIMENTO(0.11),
+	RENDIMENTO(0.005),
 	SEGURO(0.20);
 	
 	private double valorTaxa;

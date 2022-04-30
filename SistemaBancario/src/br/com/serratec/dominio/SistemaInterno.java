@@ -23,57 +23,65 @@ public class SistemaInterno {
 		Usuario usuario;
 		Conta conta;
 		Scanner leitor = new Scanner(System.in);
-		
+
 		carregarRepositorios();
 		usuario = realizarLogin(leitor);
 		conta = pegarConta(usuario);
 
-
-		if (usuario instanceof Cliente) {
-			int opcao;
-			System.out.println("Bem vindo, " + usuario.getNome() + "\n");
-
-			System.out.println("============== MENU INICIAL ==============");
-			System.out.println("1 - Movimentação");
-			System.out.println("2 - Mostrar saldo");
-			System.out.println("3 - Relatórios");
-			System.out.println("4 - Contratar seguro de vida");
-			System.out.println("==========================================\n");
-			System.out.print("Digite uma das opcoes acima: ");
-			opcao = leitor.nextInt();
-			leitor.nextLine();
-
-			switch (opcao) {
-			case 1:
-				movimentacaoMenu(leitor, conta);
-				break;
-			case 2:
+		do {
+			if (usuario instanceof Cliente) {
+				int opcao;
 				
-				break;
-			case 3:
-				
-				break;
-			case 4:
+				System.out.println("------------------------------------------");
+				System.out.println("Bem vindo, " + usuario.getNome());
+				System.out.println("------------------------------------------");
 
-				break;
-			case 5:
+				System.out.println("============== MENU INICIAL ==============");
+				System.out.println("1 - Menu de Movimentação");
+				System.out.println("2 - Mostrar saldo");
+				System.out.println("3 - Relatório de tributação da conta corrente");
+				System.out.println("4 - Relatório de rendimento da poupança");
+				System.out.println("5 - Contratar seguro de vida");
+				System.out.println("6 - Finalizar programa");
+				System.out.println("==========================================\n");
+				System.out.print("Digite uma das opcoes acima: ");
+				opcao = leitor.nextInt();
+				leitor.nextLine();
 
-				break;
-			default:
-				
-				break;
+				switch (opcao) {
+				case 1:
+					movimentacaoMenu(leitor, conta);
+					break;
+				case 2:
+
+					break;
+				case 3:
+
+					break;
+				case 4:
+
+					break;
+				case 5:
+
+					break;
+				case 6:
+					System.out.println("Programa finalizado");
+					System.exit(0);
+				default:
+
+					break;
+				}
+
+			} else if (usuario instanceof Gerente) {
+
+			} else if (usuario instanceof Diretor) {
+
+			} else if (usuario instanceof Presidente) {
+
 			}
-
-		} else if (usuario instanceof Gerente) {
-
-		} else if (usuario instanceof Diretor) {
-
-		} else if (usuario instanceof Presidente) {
-
-		}
+		} while (true);
 	}
-	
-	
+
 	private static void carregarRepositorios() {
 		try {
 			RepositorioUsuarios.usuarioLoader();
@@ -83,12 +91,12 @@ public class SistemaInterno {
 		}
 
 	}
-	
+
 	private static Usuario realizarLogin(Scanner leitor) {
 		String cpf;
 		String senha;
 		Usuario usuario;
-		
+
 		System.out.println("============= LOG IN =============");
 
 		do {
@@ -115,97 +123,109 @@ public class SistemaInterno {
 				System.out.println("Senha inválida");
 			}
 		} while (true);
-		
+
 		return usuario;
 	}
-	
+
 	private static Conta pegarConta(Usuario usuario) {
 		Conta conta = null;
-		
+
 		try {
 			conta = RepositorioContas.pesquisaContas(usuario.getCpf());
 		} catch (CadastroInexistenteException e) {
-			e.printStackTrace();
+			System.out.println("Esse usuário não possui uma conta bancária registrada no sistema.");
 		}
-		
+
 		return conta;
 	}
-	
-	
-	
-	
+
 	private static void movimentacaoMenu(Scanner leitor, Conta conta) {
 		int opcao;
-		
-		System.out.println("================ MOVIMENTACOES ================");
-		System.out.println("1 - saque");
-		System.out.println("2 - deposito");
-		System.out.println("3 - transferencia");
-		System.out.println("4 - voltar");
-		System.out.println("===============================================");
-		
-		System.out.print("\nEscolha uma das opcoes acima: ");
-		opcao = leitor.nextInt();
-		
-		switch (opcao) {
-		case 1:
-			double valorSaque = 0;
-			System.out.print("Digite o valor: ");
-			valorSaque = leitor.nextDouble();
-			try {
-				conta.sacar(valorSaque);
-			} catch (ValorNegativoException e) {
-				System.out.println("Não é possível sacar um valor negativo");
-			} catch (ValorInsuficienteException e) {
-				System.out.println("Você não possui saldo suficiente para realizar o saque.");
-				System.out.println("Verifique se também possui saldo suficiente para pagar a taxa de " + TipoTaxa.SAQUE.getValorTaxa());
-			}
-			break;
-		case 2:
-			double valorDep = 0;
-			System.out.print("Digite o valor: ");
-			valorDep = leitor.nextDouble();
-			try {
-				conta.depositar(valorDep);
-			} catch (ValorNegativoException e) {
-				System.out.println("Não é possível depositar um valor negativo");
-			} catch (ValorInsuficienteException e) {
-				System.out.println("Você não possui saldo suficiente para realizar o deposito.");
-				System.out.println("Verifique se também possui saldo suficiente para pagar a taxa de " + TipoTaxa.DEPOSITO.getValorTaxa());
-			}
-			break;
-		case 3:
-			double valorTransf = 0;
-			String cpfDestino;
-			Conta contaDest = null;
 
-			System.out.println("Digite o cpf do titular destino: ");
-			cpfDestino = leitor.nextLine();
-			System.out.print("Digite o valor: ");
-			valorTransf = leitor.nextDouble();
+		do {
+			System.out.println("================ MOVIMENTACOES ================");
+			System.out.println("1 - saque");
+			System.out.println("2 - deposito");
+			System.out.println("3 - transferencia");
+			System.out.println("4 - voltar");
+			System.out.println("===============================================");
 
-			try {
-				contaDest = RepositorioContas.pesquisaContas(cpfDestino);
-			} catch (CadastroInexistenteException e1) {
-				System.out.println("Conta destino não existe");
-			}
+			System.out.print("\nEscolha uma das opcoes acima: ");
+			opcao = leitor.nextInt();
+			leitor.nextLine();
 
-			try {
-				conta.transferir(valorTransf, contaDest);
-			} catch (ValorNegativoException e) {
-				System.out.println("Não é possível depositar um valor negativo");
-			} catch (ValorInsuficienteException e) {
-				System.out.println("Você não possui saldo suficiente para realizar o deposito.");
-				System.out.println("Verifique se também possui saldo suficiente para pagar a taxa de " + TipoTaxa.TRANSFERENCIA.getValorTaxa());
+			switch (opcao) {
+			case 1:
+				double valorSaque = 0;
+				System.out.print("Digite o valor: ");
+				valorSaque = leitor.nextDouble();
+				leitor.nextLine();
+				
+				try {
+					conta.sacar(valorSaque);
+				} catch (ValorNegativoException e) {
+					System.out.println("Não é possível sacar um valor negativo");
+				} catch (ValorInsuficienteException e) {
+					System.out.println("Você não possui saldo suficiente para realizar o saque.");
+					System.out.println("Verifique se também possui saldo suficiente para pagar a taxa de "
+							+ TipoTaxa.SAQUE.getValorTaxa());
+				}
+				break;
+			case 2:
+				double valorDep = 0;
+				System.out.print("Digite o valor: ");
+				valorDep = leitor.nextDouble();
+				leitor.nextLine();
+				
+				try {
+					conta.depositar(valorDep);
+				} catch (ValorNegativoException e) {
+					System.out.println("Não é possível depositar um valor negativo");
+				} catch (ValorInsuficienteException e) {
+					System.out.println("Você não possui saldo suficiente para realizar o deposito.");
+					System.out.println("Verifique se também possui saldo suficiente para pagar a taxa de "
+							+ TipoTaxa.DEPOSITO.getValorTaxa());
+				}
+				break;
+			case 3:
+				double valorTransf = 0;
+				String cpfDestino;
+				Conta contaDest = null;
+
+				System.out.print("Digite o cpf do titular destino: ");
+				cpfDestino = leitor.nextLine();
+
+				try {
+					contaDest = RepositorioContas.pesquisaContas(cpfDestino);
+				} catch (CadastroInexistenteException e1) {
+					System.out.println("Conta destino não existe");
+					break;
+				}
+
+				System.out.print("Digite o valor: ");
+				valorTransf = leitor.nextDouble();
+				leitor.nextLine();
+
+				try {
+					conta.transferir(valorTransf, contaDest);
+				} catch (ValorNegativoException e) {
+					System.out.println("Não é possível depositar um valor negativo");
+				} catch (ValorInsuficienteException e) {
+					System.out.println("Você não possui saldo suficiente para realizar o deposito.");
+					System.out.println("Verifique se também possui saldo suficiente para pagar a taxa de "
+							+ TipoTaxa.TRANSFERENCIA.getValorTaxa());
+				}
+				break;
+			case 4:
+				return;
+
+			default:
+				System.out.println("Opcao inválida. Tente novamente.");
+				break;
 			}
-			break;
-		case 4:
 			
-			break;
-
-		default:
-			System.out.println("Opcao inválida");
-			break;
-		}
+			System.out.println("Pressione ENTER para continuar");
+			leitor.nextLine();
+		} while (true);
 	}
 }

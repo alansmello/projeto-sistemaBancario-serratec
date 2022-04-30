@@ -1,80 +1,73 @@
 package br.com.serratec.dominio;
 
 import java.io.IOException;
+import java.util.Scanner;
 
-import br.com.serratec.entidade.contas.ContaCorrente;
-import br.com.serratec.entidade.contas.ContaPoupanca;
 import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
-import br.com.serratec.entidade.excecoes.CpfInexistenteException;
-import br.com.serratec.entidade.excecoes.ValorInvalidoException;
-import br.com.serratec.entidade.excecoes.ValorNegativoException;
 import br.com.serratec.entidade.excecoes.cadastroExisteException;
+import br.com.serratec.entidade.excecoes.senhaInvalidaException;
 import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
+import br.com.serratec.entidade.usuarios.Cliente;
+import br.com.serratec.entidade.usuarios.Diretor;
+import br.com.serratec.entidade.usuarios.Gerente;
+import br.com.serratec.entidade.usuarios.Presidente;
+import br.com.serratec.entidade.usuarios.Usuario;
 
 public class SistemaInterno {
-
-	public static void main(String[] args) throws IOException, cadastroExisteException, CadastroInexistenteException {
+	public static void main(String[] args){
 		try {
 			RepositorioUsuarios.usuarioLoader();
-		} catch (Exception e) {
-			System.out.println(e);
+		} catch (IOException | cadastroExisteException e1) {
+			System.out.println("Erro ao carregar os arquivos");
 		}
 		
+		String cpf;
+		String senha;
+		Usuario usuario = null;
+		Scanner leitor = new Scanner(System.in);
 		
 		
 		
-		ContaCorrente c4 = new ContaCorrente (2541, 2545, "0913914", 10000);
-		ContaCorrente c5 = new ContaCorrente (254, 541, "333333", 10000);
-		c4.transferir(2501, c5);
-		c4.sacar(100);
-		c5.sacar(150);
-		c4.ContratarSeguro(1000);
-	
-		ContaPoupanca alan = new ContaPoupanca (1111, 2222, "0123456", 300, 17);
-		try {
-			alan.simuladorPoupanca(1000, 365);
-		} catch (ValorNegativoException | ValorInvalidoException | IOException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
+		System.out.println("============= LOG IN =============");
 		
-		/*try {
-			System.out.println(RepositorioUsuarios.getUsuario("0913914").getNome());
-		} catch (CpfInexistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-	
-		
-		try {
+		do {
+			System.out.print("Digite o CPF: ");
+			cpf = leitor.nextLine();
+			
 			try {
-				c4.RelatorioTributos();
-			} catch (CpfInexistenteException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				usuario = RepositorioUsuarios.pesquisaUsuario(cpf);
+				break;
+			} catch (CadastroInexistenteException e) {
+				System.out.println("Usuário não encontrado");
 			}
-		} catch (IOException | CadastroInexistenteException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+			
+		}while(true);
+		
+		
+		do {
+			System.out.print("Digite a senha: ");
+			senha = leitor.nextLine();
+			
+			try {
+				usuario.autentica(senha);
+				break;
+			} catch (senhaInvalidaException e) {
+				System.out.println("Senha inválida");
+			}
+		} while (true);
+		
+		
+		if(usuario instanceof Cliente) {
+			System.out.println("Bem vindo, " + usuario.getNome());
+		}else if(usuario instanceof Gerente) {
+			
+		}else if(usuario instanceof Diretor) {
+			
+		}else if(usuario instanceof Presidente) {
+			
 		}
-		
-		
-		
-		
-		
-		
-		/**SegurodeVida s1 = new SegurodeVida (100.00, "1648745125");
-		System.out.println("Data de Expiração: " + s1.getDataExpiracao());
-
-	}*/
-		
-		
-		
-		
-
-	
-
-	}}
+	}
+}
 
 
 

@@ -16,11 +16,18 @@ import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
 public class ContaPoupanca extends Conta {
 	private final char tipoConta = 'p';
 	private int aniversarioConta;
+	private static int qtdContas = 1;
+	public static int getQtdContas() {
+		return qtdContas;
+	}
 	public ContaPoupanca(int numero, int agencia, String cpfTitular, double saldo, int aniversarioConta) {
 		super(numero, agencia, cpfTitular, saldo);
 		this.aniversarioConta = aniversarioConta;
 	}
 	
+	public int getAniversarioConta() {
+		return aniversarioConta;
+	}
 	
 	public void simuladorPoupanca(double valor, int qtdDias) throws ValorNegativoException, ValorInvalidoException, IOException {
         if (valor <= 0) {

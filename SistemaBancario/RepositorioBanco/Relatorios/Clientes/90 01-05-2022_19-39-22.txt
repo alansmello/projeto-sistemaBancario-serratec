@@ -1,0 +1,12 @@
+Relatório Conta Corrente - Tributos - 01/05/2022 19:39:22
+Nome: pedro/ CPF: 90
+
+Total taxas:
+Taxas saque: R$ 0,10
+Taxas depósito: R$ 0,10
+Taxas transferência: R$ 0,20
+--------//--------
+Taxas:
+Taxa para saque: R$ 0,10
+Taxa para depósito: R$ 0,10
+Taxa para transferência: R$ 0,20

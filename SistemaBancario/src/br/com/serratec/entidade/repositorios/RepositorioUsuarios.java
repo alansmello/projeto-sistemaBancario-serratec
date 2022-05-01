@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
+import br.com.serratec.entidade.excecoes.CpfInexistenteException;
 import br.com.serratec.entidade.excecoes.cadastroExisteException;
 import br.com.serratec.entidade.usuarios.Cliente;
 import br.com.serratec.entidade.usuarios.Diretor;
@@ -71,7 +72,7 @@ public class  RepositorioUsuarios {
 			
 		
 		} while (true);
-		
+		System.out.println(usuarioLista);
 		leitorUsuario.close();
 		leitorUsuarioBff.close();
 		
@@ -87,4 +88,10 @@ public class  RepositorioUsuarios {
 		}
 		return usuarioPesquisado;
 	}
+	public static Usuario getUsuario(String cpfExt) throws CpfInexistenteException {
+        if (!usuarioLista.containsKey(cpfExt)) {
+            throw new CpfInexistenteException();
+        }
+        return usuarioLista.get(cpfExt);
+    }
 }

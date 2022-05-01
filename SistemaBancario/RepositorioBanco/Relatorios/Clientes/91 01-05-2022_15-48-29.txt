@@ -1,0 +1,12 @@
+Relatório Conta Corrente - Tributos - 01/05/2022 15:48:29
+Nome: alan/ CPF: 91
+
+Total taxas:
+Taxas saque: R$ 0,30
+Taxas depósito: R$ 0,10
+Taxas transferência: R$ 0,00
+--------//--------
+Taxas:
+Taxa para saque: R$ 0,10
+Taxa para depósito: R$ 0,10
+Taxa para transferência: R$ 0,20

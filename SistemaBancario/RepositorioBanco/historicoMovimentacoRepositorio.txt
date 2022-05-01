@@ -156,3 +156,5 @@ segurovida;91;-4.0;c
 segurovida;91;-10.0;c
 segurovida;91;1000.0;c
 segurovida;91;1000.0;c
+saque;91;100.0;c
+segurovida;91;1000.0;c

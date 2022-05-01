@@ -37,15 +37,15 @@ public class SistemaInterno {
 			System.out.println("------------------------------------------");
 			System.out.println("Bem vindo, " + usuario.getNome());
 			System.out.println("------------------------------------------");
-			
+
 			if (usuario instanceof Cliente) {
 				int opcao;
-				
+
 				System.out.println("============== MENU INICIAL ==============");
 				System.out.println("1 - Menu de Movimentação");
 				System.out.println("2 - Mostrar saldo");
 				System.out.println("3 - Relatório de tributação da conta corrente");
-				System.out.println("4 - Relatório de rendimento da poupança");
+				System.out.println("4 - Simulação de rendimento da poupança");
 				System.out.println("5 - Contratar seguro de vida");
 				System.out.println("6 - Finalizar programa");
 				System.out.println("==========================================\n");
@@ -67,7 +67,7 @@ public class SistemaInterno {
 					System.out.println("Pressione ENTER para continuar");
 					leitor.nextLine();
 					break;
-				case 4:					
+				case 4:
 					imprimirRelatorioRendPoupanca(leitor, conta);
 					System.out.println("Pressione ENTER para continuar");
 					leitor.nextLine();
@@ -86,6 +86,49 @@ public class SistemaInterno {
 				}
 
 			} else if (usuario instanceof Gerente) {
+				int opcao;
+
+				System.out.println("============== MENU INICIAL ==============");
+				System.out.println("1 - Menu de Movimentação");
+				System.out.println("2 - Mostrar saldo");
+				System.out.println("3 - Relatório de tributação da conta corrente");
+				System.out.println("4 - Simulação de rendimento da poupança");
+				System.out.println("5 - Quantidade de contas da agência");
+				System.out.println("6 - Finalizar programa");
+				System.out.println("==========================================\n");
+				System.out.print("Digite uma das opcoes acima: ");
+				opcao = leitor.nextInt();
+				leitor.nextLine();
+
+				switch (opcao) {
+				case 1:
+					movimentacaoMenu(leitor, conta);
+					break;
+				case 2:
+					mostrarSaldo(conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
+					break;
+				case 3:
+					imprimirRelatorioTributos(conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
+					break;
+				case 4:
+					imprimirRelatorioRendPoupanca(leitor, conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
+					break;
+				case 5:
+					
+					break;
+				case 6:
+					System.out.println("Programa finalizado");
+					System.exit(0);
+				default:
+
+					break;
+				}
 
 			} else if (usuario instanceof Diretor) {
 
@@ -122,8 +165,7 @@ public class SistemaInterno {
 			} catch (CadastroInexistenteException e) {
 				System.out.println("Usuário não encontrado");
 			}
-		
-			
+
 		} while (true);
 
 		do {
@@ -176,7 +218,7 @@ public class SistemaInterno {
 				System.out.print("Digite o valor: ");
 				valorSaque = leitor.nextDouble();
 				leitor.nextLine();
-				
+
 				try {
 					conta.sacar(valorSaque);
 				} catch (ValorNegativoException e) {
@@ -192,7 +234,7 @@ public class SistemaInterno {
 				System.out.print("Digite o valor: ");
 				valorDep = leitor.nextDouble();
 				leitor.nextLine();
-				
+
 				try {
 					conta.depositar(valorDep);
 				} catch (ValorNegativoException e) {
@@ -239,51 +281,51 @@ public class SistemaInterno {
 				System.out.println("Opcao inválida. Tente novamente.");
 				break;
 			}
-			
+
 			RepositorioContas.atualizarContas();
 			System.out.println("Pressione ENTER para continuar");
 			leitor.nextLine();
 		} while (true);
 	}
-	
+
 	private static void mostrarSaldo(Conta conta) {
 		limparTela();
 		System.out.println("================================");
 		System.out.printf("Saldo atual: R$ %.2f\n", conta.getSaldo());
 		System.out.println("================================\n");
 	}
-	
+
 	private static void imprimirRelatorioTributos(Conta conta) {
 		limparTela();
-		
-		if(conta instanceof ContaCorrente) {
+
+		if (conta instanceof ContaCorrente) {
 			try {
-				((ContaCorrente)conta).relatorioTributos();
+				((ContaCorrente) conta).relatorioTributos();
 				System.out.println("Relatório de tributação da conta corrente gerado com sucesso");
 			} catch (IOException e) {
 				System.out.println("Não foi possível gerar o arquivo");
 			} catch (CpfInexistenteException e) {
 				System.out.println("O titular dessa conta não está cadastrado no sistema");
 			}
-		}else {
+		} else {
 			System.out.println("Não é possível gerar o relatório de tributação de uma conta poupança");
 		}
 	}
-	
+
 	private static void imprimirRelatorioRendPoupanca(Scanner leitor, Conta conta) {
 		limparTela();
-		
+
 		double valor;
 		int qtdDias;
-		
-		if(conta instanceof ContaPoupanca) {
-			
+
+		if (conta instanceof ContaPoupanca) {
+
 			System.out.print("Digite o valor: ");
 			valor = leitor.nextDouble();
 			System.out.print("Digite a quantidade de dias: ");
 			qtdDias = leitor.nextInt();
 			leitor.nextLine();
-			
+
 			try {
 				((ContaPoupanca) conta).simuladorPoupanca(valor, qtdDias);
 			} catch (ValorNegativoException e) {
@@ -293,20 +335,20 @@ public class SistemaInterno {
 			} catch (IOException e) {
 				System.out.println("Erro ao gerar arquivo. Verifique as permissões");
 			}
-		}else {
+		} else {
 			System.out.println("Não é possível fazer simulação de rendimento de uma conta corrente");
 		}
 	}
-	
+
 	private static void contratarSeguroVida(Scanner leitor, Conta conta) {
 		limparTela();
 		double valorSegurado;
-		
-		if(conta instanceof ContaCorrente) {
+
+		if (conta instanceof ContaCorrente) {
 			System.out.print("Digite o valor segurado: ");
 			valorSegurado = leitor.nextDouble();
 			leitor.nextLine();
-			
+
 			try {
 				((ContaCorrente) conta).contratarSeguro(valorSegurado);
 			} catch (ValorInsuficienteException e) {
@@ -314,15 +356,15 @@ public class SistemaInterno {
 			} catch (ValorNegativoException e) {
 				System.out.println("Não é possível contratar um seguro de valor negativo");
 			}
-			
+
 			RepositorioContas.atualizarContas();
-		}else {
+		} else {
 			System.out.println("Não é possível contratar um seguro de vida a partir de uma conta poupança");
 		}
 	}
-	
+
 	private static void limparTela() {
-		for(int i=0; i<100; i++)
+		for (int i = 0; i < 100; i++)
 			System.out.println("");
 	}
 }

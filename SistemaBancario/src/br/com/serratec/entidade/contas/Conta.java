@@ -23,14 +23,21 @@ public abstract class Conta {
 	protected char tipo;
 	protected String cpfTitular;
 	protected double saldo;
+	protected static double totalSaldo = 0; 
 	
 	public Conta(int numero, int agencia, String cpfTitular, double saldo) {
 		this.numero = numero;
 		this.agencia = agencia;
 		this.cpfTitular = cpfTitular;
 		this.saldo = saldo;
+		
+		totalSaldo += saldo;
 	}
 	
+	public static double getTotalSaldo() {
+		return totalSaldo;
+	}
+
 	public int getNumero() {
 		return numero;
 	}

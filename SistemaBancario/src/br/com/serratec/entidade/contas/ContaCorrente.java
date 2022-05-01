@@ -20,9 +20,11 @@ import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
 
 public class ContaCorrente extends Conta {
 	private final char tipoConta = 'c';
+	private static int qtdContas = 0;
 
 	public ContaCorrente(int numero, int agencia, String cpfTitular, double saldo) {
 		super(numero, agencia, cpfTitular, saldo);
+		qtdContas +=1;
 	}
 
 	public void contratarSeguro(double valorSegurado) throws ValorInsuficienteException, ValorNegativoException {
@@ -166,5 +168,8 @@ public class ContaCorrente extends Conta {
 		}
 
 	}
-
+  
+	public static int getQtdContas() {
+		return qtdContas;
+	}
 }

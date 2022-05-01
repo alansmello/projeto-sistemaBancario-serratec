@@ -29,6 +29,7 @@ public class SistemaInterno {
 		conta = pegarConta(usuario);
 
 		do {
+			limparTela();
 			if (usuario instanceof Cliente) {
 				int opcao;
 				
@@ -53,7 +54,9 @@ public class SistemaInterno {
 					movimentacaoMenu(leitor, conta);
 					break;
 				case 2:
-
+					mostrarSaldo(conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
 					break;
 				case 3:
 
@@ -109,7 +112,8 @@ public class SistemaInterno {
 			} catch (CadastroInexistenteException e) {
 				System.out.println("Usuário não encontrado");
 			}
-
+		
+			
 		} while (true);
 
 		do {
@@ -143,6 +147,7 @@ public class SistemaInterno {
 		int opcao;
 
 		do {
+			limparTela();
 			System.out.println("================ MOVIMENTACOES ================");
 			System.out.println("1 - saque");
 			System.out.println("2 - deposito");
@@ -153,6 +158,7 @@ public class SistemaInterno {
 			System.out.print("\nEscolha uma das opcoes acima: ");
 			opcao = leitor.nextInt();
 			leitor.nextLine();
+			limparTela();
 
 			switch (opcao) {
 			case 1:
@@ -227,5 +233,17 @@ public class SistemaInterno {
 			System.out.println("Pressione ENTER para continuar");
 			leitor.nextLine();
 		} while (true);
+	}
+	
+	private static void mostrarSaldo(Conta conta) {
+		limparTela();
+		System.out.println("================================");
+		System.out.printf("Saldo atual: R$ %.2f\n", conta.getSaldo());
+		System.out.println("================================\n");
+	}
+	
+	private static void limparTela() {
+		for(int i=0; i<100; i++)
+			System.out.println("");
 	}
 }

@@ -230,6 +230,7 @@ public class SistemaInterno {
 				break;
 			}
 			
+			RepositorioContas.atualizarContas();
 			System.out.println("Pressione ENTER para continuar");
 			leitor.nextLine();
 		} while (true);

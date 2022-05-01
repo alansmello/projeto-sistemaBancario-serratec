@@ -21,6 +21,9 @@ public class ContaPoupanca extends Conta {
 		this.aniversarioConta = aniversarioConta;
 	}
 	
+	public int getAniversarioConta() {
+		return aniversarioConta;
+	}
 	
 	public void simuladorPoupanca(double valor, int qtdDias) throws ValorNegativoException, ValorInvalidoException, IOException {
         if (valor <= 0) {

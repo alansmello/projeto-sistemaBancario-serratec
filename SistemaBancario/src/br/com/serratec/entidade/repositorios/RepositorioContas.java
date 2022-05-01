@@ -1,16 +1,19 @@
 package br.com.serratec.entidade.repositorios;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Scanner;
 
 import br.com.serratec.entidade.contas.Conta;
-import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
-import br.com.serratec.entidade.excecoes.cadastroExisteException;
 import br.com.serratec.entidade.contas.ContaCorrente;
 import br.com.serratec.entidade.contas.ContaPoupanca;
+import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
+import br.com.serratec.entidade.excecoes.cadastroExisteException;
 
 public class RepositorioContas {
 
@@ -23,6 +26,14 @@ public class RepositorioContas {
 		}
 		contasLista.put(conta.getCpfTitular(), conta);
 
+	}
+	
+	public static Conta pesquisaContas(String cpfTitular) throws CadastroInexistenteException {
+		Conta contaPesquisada = contasLista.get(cpfTitular);
+		if (contaPesquisada == null) {
+			throw new CadastroInexistenteException();
+		}
+		return contaPesquisada;
 	}
 
 	public static void contasLoader() throws IOException, cadastroExisteException {
@@ -63,11 +74,44 @@ public class RepositorioContas {
 		leitorContasBff.close();
 
 	}
-	public static Conta pesquisaContas(String cpfTitular) throws CadastroInexistenteException {
-		Conta contaPesquisada = contasLista.get(cpfTitular);
-		if (contaPesquisada == null) {
-			throw new CadastroInexistenteException();
+	
+	public static void atualizarContas() {
+		File arquivo = new File("contas.csv");
+		FileWriter writer;
+		BufferedWriter bffWriter;
+		
+		
+		try {
+			writer = new FileWriter(arquivo);
+			bffWriter = new BufferedWriter(writer);
+			
+			for(Conta conta : contasLista.values()) {
+				writer.write(Integer.toString(conta.getNumero()) + ";");
+				writer.write(Integer.toString(conta.getAgencia()) + ";");
+				
+				if(conta instanceof ContaCorrente) {
+					writer.write("0;");
+				}else {
+					writer.write("1;");
+				}
+				
+				writer.write(conta.getCpfTitular() + ";");
+				writer.write(Double.toString(conta.getSaldo()) + ";");
+				
+				if(conta instanceof ContaCorrente) {
+					writer.write("0");
+				}else {
+					writer.write(Integer.toString(((ContaPoupanca)conta).getAniversarioConta()));
+				}
+				
+				writer.write("\n");
+			}
+			
+			writer.close();
+			bffWriter.close();
+		} catch (IOException e) {
+			System.out.println("Não foi possível atualizar o arquivo das Contas.");
+			System.out.println("Verifique se possui permissão de escrita no arquivo.");
 		}
-		return contaPesquisada;
 	}
 }

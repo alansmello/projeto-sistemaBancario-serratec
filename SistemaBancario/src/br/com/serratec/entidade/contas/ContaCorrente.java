@@ -1,6 +1,5 @@
 package br.com.serratec.entidade.contas;
 
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
@@ -14,148 +13,158 @@ import br.com.serratec.entidade.enums.TipoTaxa;
 import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
 import br.com.serratec.entidade.excecoes.CpfInexistenteException;
 import br.com.serratec.entidade.excecoes.SeguroExistenteException;
+import br.com.serratec.entidade.excecoes.ValorInsuficienteException;
+import br.com.serratec.entidade.excecoes.ValorNegativoException;
 import br.com.serratec.entidade.repositorios.RepositorioSeguroVida;
 import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
 
 public class ContaCorrente extends Conta {
 	private final char tipoConta = 'c';
-	private SegurodeVida segurodeVida;
 
 	public ContaCorrente(int numero, int agencia, String cpfTitular, double saldo) {
 		super(numero, agencia, cpfTitular, saldo);
 	}
-	
-	public boolean ContratarSeguro (double valorSegurado) {
-		
-		if((valorSegurado * TipoTaxa.SEGURO.getValorTaxa())  <= super.saldo) {
-			this.segurodeVida = new SegurodeVida(valorSegurado, super.cpfTitular);
-			super.saldo -= valorSegurado * TipoTaxa.SEGURO.getValorTaxa();
-			try {
-				registraTransacao(valorSegurado, "segurovida");
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			SegurodeVida seguroVidaTemporario = new SegurodeVida(valorSegurado,this.cpfTitular);
-	        try {
-				RepositorioSeguroVida.adicionaSeguroVida(seguroVidaTemporario);
-			} catch (SeguroExistenteException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			return true;
-		}else {
-			return false;
+
+	public void contratarSeguro(double valorSegurado) throws ValorInsuficienteException, ValorNegativoException {
+
+		if (this.saldo < valorSegurado * TipoTaxa.SEGURO.getValorTaxa()) {
+			throw new ValorInsuficienteException();
 		}
 		
+		if (valorSegurado < 0) {
+			throw new ValorNegativoException();
+		}
+		
+		SegurodeVida segurodeVida = new SegurodeVida(valorSegurado, super.cpfTitular);
+		super.saldo -= valorSegurado * TipoTaxa.SEGURO.getValorTaxa();
+		try {
+			registraTransacao(valorSegurado, "segurovida");
+			RepositorioSeguroVida.adicionaSeguroVida(segurodeVida);
+		} catch (IOException e) {
+			System.out.println("Erro ao acessar o arquivo. Verifique as permissões");
+		} catch (SeguroExistenteException e) {
+			System.out.println("seguro de vida já cotratado");
+		}
 	}
-	
-	 public void RelatorioTributos() throws IOException, CadastroInexistenteException, CpfInexistenteException {
-		 
-	        LocalDateTime hoje = LocalDateTime.now();
-	        DateTimeFormatter brasilForma = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
-	        DateTimeFormatter bdForma = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
 
-	        File pastahitoricoMovimentacao = new File("RepositorioBanco");
-	        File historicoMovimentacao = new File(pastahitoricoMovimentacao.getAbsolutePath() + "/historicoMovimentacoRepositorio.txt");
+	public void relatorioTributos() throws IOException, CpfInexistenteException {
 
-	        if (!pastahitoricoMovimentacao.exists()) {
-	        	pastahitoricoMovimentacao.mkdirs();
-	        }
+		LocalDateTime hoje = LocalDateTime.now();
+		DateTimeFormatter brasilForma = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm:ss");
+		DateTimeFormatter bdForma = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
 
-	        if (!historicoMovimentacao.exists()) {
-	        	historicoMovimentacao.createNewFile();
-	        }
+		File pastahitoricoMovimentacao = new File("RepositorioBanco");
+		File historicoMovimentacao = new File(
+				pastahitoricoMovimentacao.getAbsolutePath() + "/historicoMovimentacoRepositorio.txt");
 
-	        double totalTaxasSaque = 0;
-	        double totalTaxasDeposito = 0;
-	        double totalTaxasTransferencia = 0;
+		if (!pastahitoricoMovimentacao.exists()) {
+			pastahitoricoMovimentacao.mkdirs();
+		}
 
-	        try (FileReader historicoMovimentacaoLeitura = new FileReader(historicoMovimentacao);
-	             BufferedReader historicoMovimentacaoLeituraBuff = new BufferedReader(historicoMovimentacaoLeitura)) {
+		if (!historicoMovimentacao.exists()) {
+			historicoMovimentacao.createNewFile();
+		}
 
-	            String linha;
-	            while (((linha = historicoMovimentacaoLeituraBuff.readLine()) != null)) {
-	                String[] itens = linha.split(";");
-	                if (itens[1].equals(this.cpfTitular) && itens[3].equals("c")) {
-	                    switch (itens[0]) {
-	                        case "saque":
-	                            totalTaxasSaque += TipoTaxa.SAQUE.getValorTaxa();
-	                            break;
-	                        case "deposito":
-	                            totalTaxasDeposito += TipoTaxa.DEPOSITO.getValorTaxa();
-	                            break;
-	                        case "transferencia":
-	                            totalTaxasTransferencia += TipoTaxa.TRANSFERENCIA.getValorTaxa();
-	                            break;
-	                    }
-	                }
-	            }
-	        } catch (IOException e) {
-	            System.out.println("Erro de leitura de arquivos");
-	        }
+		double totalTaxasSaque = 0;
+		double totalTaxasDeposito = 0;
+		double totalTaxasTransferencia = 0;
 
-	        File pastaRelatorioContaCorrenteTributos = new File("RepositorioBanco/Relatorios/Clientes/");
-	        File relatorioContaCorrenteTributos = new File(pastaRelatorioContaCorrenteTributos.getAbsolutePath() + "/" + this.cpfTitular + " " + bdForma.format(hoje) + ".txt");
+		try (FileReader historicoMovimentacaoLeitura = new FileReader(historicoMovimentacao);
+				BufferedReader historicoMovimentacaoLeituraBuff = new BufferedReader(historicoMovimentacaoLeitura)) {
 
-	        if (!pastaRelatorioContaCorrenteTributos.exists()) {
-	        	pastaRelatorioContaCorrenteTributos.mkdirs();
-	        }
+			String linha;
+			while (((linha = historicoMovimentacaoLeituraBuff.readLine()) != null)) {
+				String[] itens = linha.split(";");
+				if (itens[1].equals(this.cpfTitular) && itens[3].equals("c")) {
+					switch (itens[0]) {
+					case "saque":
+						totalTaxasSaque += TipoTaxa.SAQUE.getValorTaxa();
+						break;
+					case "deposito":
+						totalTaxasDeposito += TipoTaxa.DEPOSITO.getValorTaxa();
+						break;
+					case "transferencia":
+						totalTaxasTransferencia += TipoTaxa.TRANSFERENCIA.getValorTaxa();
+						break;
+					}
+				}
+			}
+		} catch (IOException e) {
+			System.out.println("Erro de leitura de arquivos");
+		}
 
-	        if (!relatorioContaCorrenteTributos.exists()) {
-	        	relatorioContaCorrenteTributos.createNewFile();
-	        }
+		File pastaRelatorioContaCorrenteTributos = new File("RepositorioBanco/Relatorios/Clientes/");
+		File relatorioContaCorrenteTributos = new File(pastaRelatorioContaCorrenteTributos.getAbsolutePath() + "/"
+				+ this.cpfTitular + " " + bdForma.format(hoje) + ".txt");
 
-	        try (FileWriter relatorioContaCorrenteTributosEscrita = new FileWriter(relatorioContaCorrenteTributos);
-	             BufferedWriter relatorioContaCorrenteTributosEscritaBuffer = new BufferedWriter(relatorioContaCorrenteTributosEscrita)) {
+		if (!pastaRelatorioContaCorrenteTributos.exists()) {
+			pastaRelatorioContaCorrenteTributos.mkdirs();
+		}
 
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Relatório Conta Corrente - Tributos - " + brasilForma.format(hoje));
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Nome: " + RepositorioUsuarios.getUsuario(this.cpfTitular).getNome()+ "/ CPF: " + this.cpfTitular);
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Total taxas:");
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxas saque: R$ " + String.format("%.2f", totalTaxasSaque));
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxas depósito: R$ " + String.format("%.2f", totalTaxasDeposito));
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxas transferência: R$ " + String.format("%.2f", totalTaxasTransferencia));
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("--------//--------");
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
+		if (!relatorioContaCorrenteTributos.exists()) {
+			relatorioContaCorrenteTributos.createNewFile();
+		}
 
-	            try {
-	                SegurodeVida seguroVidaAtual = RepositorioSeguroVida.getSeguroVida(this.cpfTitular);
-	                relatorioContaCorrenteTributosEscritaBuffer.append("SEGURO DE VIDA");
-	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	                relatorioContaCorrenteTributosEscritaBuffer.append("Valor contratado: R$ " + String.format("%.2f", seguroVidaAtual.getValorSegurado()));
-	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	                relatorioContaCorrenteTributosEscritaBuffer.append("Data Expiração: R$ " + seguroVidaAtual.getDataExpiracao());
-	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	                relatorioContaCorrenteTributosEscritaBuffer.append("Taxa de Seguro de Vida: R$ " + String.format("%.2f", seguroVidaAtual.getValorSegurado() * TipoTaxa.SEGURO.getValorTaxa()));
-	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	                relatorioContaCorrenteTributosEscritaBuffer.append("--------//--------");
-	                relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	            } catch (CpfInexistenteException e) {
+		try (FileWriter relatorioContaCorrenteTributosEscrita = new FileWriter(relatorioContaCorrenteTributos);
+				BufferedWriter relatorioContaCorrenteTributosEscritaBuffer = new BufferedWriter(
+						relatorioContaCorrenteTributosEscrita)) {
 
-	            }
+			relatorioContaCorrenteTributosEscritaBuffer
+					.append("Relatório Conta Corrente - Tributos - " + brasilForma.format(hoje));
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer.append(
+					"Nome: " + RepositorioUsuarios.getUsuario(this.cpfTitular).getNome() + "/ CPF: " + this.cpfTitular);
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer.append("Total taxas:");
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer
+					.append("Taxas saque: R$ " + String.format("%.2f", totalTaxasSaque));
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer
+					.append("Taxas depósito: R$ " + String.format("%.2f", totalTaxasDeposito));
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer
+					.append("Taxas transferência: R$ " + String.format("%.2f", totalTaxasTransferencia));
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer.append("--------//--------");
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
 
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxas:");
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxa para saque: R$ " + String.format("%.2f", TipoTaxa.SAQUE.getValorTaxa()));
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxa para depósito: R$ " + String.format("%.2f", TipoTaxa.DEPOSITO.getValorTaxa()));
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
-	        	relatorioContaCorrenteTributosEscritaBuffer.append("Taxa para transferência: R$ " + String.format("%.2f", TipoTaxa.TRANSFERENCIA.getValorTaxa()));
-	        	relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			try {
+				SegurodeVida seguroVidaAtual = RepositorioSeguroVida.getSeguroVida(this.cpfTitular);
+				relatorioContaCorrenteTributosEscritaBuffer.append("SEGURO DE VIDA");
+				relatorioContaCorrenteTributosEscritaBuffer.newLine();
+				relatorioContaCorrenteTributosEscritaBuffer
+						.append("Valor contratado: R$ " + String.format("%.2f", seguroVidaAtual.getValorSegurado()));
+				relatorioContaCorrenteTributosEscritaBuffer.newLine();
+				relatorioContaCorrenteTributosEscritaBuffer
+						.append("Data Expiração: R$ " + seguroVidaAtual.getDataExpiracao());
+				relatorioContaCorrenteTributosEscritaBuffer.newLine();
+				relatorioContaCorrenteTributosEscritaBuffer.append("Taxa de Seguro de Vida: R$ "
+						+ String.format("%.2f", seguroVidaAtual.getValorSegurado() * TipoTaxa.SEGURO.getValorTaxa()));
+				relatorioContaCorrenteTributosEscritaBuffer.newLine();
+				relatorioContaCorrenteTributosEscritaBuffer.append("--------//--------");
+				relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			} catch (CpfInexistenteException e) {
 
-	        } catch (IOException  e) {
-	            System.out.println("Erro de escrita de arquivos");
-	        }
+			}
 
-	    }
+			relatorioContaCorrenteTributosEscritaBuffer.append("Taxas:");
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer
+					.append("Taxa para saque: R$ " + String.format("%.2f", TipoTaxa.SAQUE.getValorTaxa()));
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer
+					.append("Taxa para depósito: R$ " + String.format("%.2f", TipoTaxa.DEPOSITO.getValorTaxa()));
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
+			relatorioContaCorrenteTributosEscritaBuffer.append(
+					"Taxa para transferência: R$ " + String.format("%.2f", TipoTaxa.TRANSFERENCIA.getValorTaxa()));
+			relatorioContaCorrenteTributosEscritaBuffer.newLine();
 
-	
-	
+		} catch (IOException e) {
+			System.out.println("Erro de escrita de arquivos");
+		}
+
+	}
+
 }

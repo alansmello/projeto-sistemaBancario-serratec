@@ -4,9 +4,13 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import br.com.serratec.entidade.contas.Conta;
+import br.com.serratec.entidade.contas.ContaCorrente;
+import br.com.serratec.entidade.contas.ContaPoupanca;
 import br.com.serratec.entidade.enums.TipoTaxa;
 import br.com.serratec.entidade.excecoes.CadastroInexistenteException;
+import br.com.serratec.entidade.excecoes.CpfInexistenteException;
 import br.com.serratec.entidade.excecoes.ValorInsuficienteException;
+import br.com.serratec.entidade.excecoes.ValorInvalidoException;
 import br.com.serratec.entidade.excecoes.ValorNegativoException;
 import br.com.serratec.entidade.excecoes.cadastroExisteException;
 import br.com.serratec.entidade.excecoes.senhaInvalidaException;
@@ -30,13 +34,13 @@ public class SistemaInterno {
 
 		do {
 			limparTela();
+			System.out.println("------------------------------------------");
+			System.out.println("Bem vindo, " + usuario.getNome());
+			System.out.println("------------------------------------------");
+			
 			if (usuario instanceof Cliente) {
 				int opcao;
 				
-				System.out.println("------------------------------------------");
-				System.out.println("Bem vindo, " + usuario.getNome());
-				System.out.println("------------------------------------------");
-
 				System.out.println("============== MENU INICIAL ==============");
 				System.out.println("1 - Menu de Movimentação");
 				System.out.println("2 - Mostrar saldo");
@@ -59,13 +63,19 @@ public class SistemaInterno {
 					leitor.nextLine();
 					break;
 				case 3:
-
+					imprimirRelatorioTributos(conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
 					break;
-				case 4:
-
+				case 4:					
+					imprimirRelatorioRendPoupanca(leitor, conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
 					break;
 				case 5:
-
+					contratarSeguroVida(leitor, conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
 					break;
 				case 6:
 					System.out.println("Programa finalizado");
@@ -241,6 +251,74 @@ public class SistemaInterno {
 		System.out.println("================================");
 		System.out.printf("Saldo atual: R$ %.2f\n", conta.getSaldo());
 		System.out.println("================================\n");
+	}
+	
+	private static void imprimirRelatorioTributos(Conta conta) {
+		limparTela();
+		
+		if(conta instanceof ContaCorrente) {
+			try {
+				((ContaCorrente)conta).relatorioTributos();
+				System.out.println("Relatório de tributação da conta corrente gerado com sucesso");
+			} catch (IOException e) {
+				System.out.println("Não foi possível gerar o arquivo");
+			} catch (CpfInexistenteException e) {
+				System.out.println("O titular dessa conta não está cadastrado no sistema");
+			}
+		}else {
+			System.out.println("Não é possível gerar o relatório de tributação de uma conta poupança");
+		}
+	}
+	
+	private static void imprimirRelatorioRendPoupanca(Scanner leitor, Conta conta) {
+		limparTela();
+		
+		double valor;
+		int qtdDias;
+		
+		if(conta instanceof ContaPoupanca) {
+			
+			System.out.print("Digite o valor: ");
+			valor = leitor.nextDouble();
+			System.out.print("Digite a quantidade de dias: ");
+			qtdDias = leitor.nextInt();
+			leitor.nextLine();
+			
+			try {
+				((ContaPoupanca) conta).simuladorPoupanca(valor, qtdDias);
+			} catch (ValorNegativoException e) {
+				System.out.println("Não é possível fazer uma simulação com um valor negativo");
+			} catch (ValorInvalidoException e) {
+				System.out.println("A quantidade de dias deve ser maior ou igual a 30");
+			} catch (IOException e) {
+				System.out.println("Erro ao gerar arquivo. Verifique as permissões");
+			}
+		}else {
+			System.out.println("Não é possível fazer simulação de rendimento de uma conta corrente");
+		}
+	}
+	
+	private static void contratarSeguroVida(Scanner leitor, Conta conta) {
+		limparTela();
+		double valorSegurado;
+		
+		if(conta instanceof ContaCorrente) {
+			System.out.print("Digite o valor segurado: ");
+			valorSegurado = leitor.nextDouble();
+			leitor.nextLine();
+			
+			try {
+				((ContaCorrente) conta).contratarSeguro(valorSegurado);
+			} catch (ValorInsuficienteException e) {
+				System.out.println("Saldo insuficiente para contratar o seguro");
+			} catch (ValorNegativoException e) {
+				System.out.println("Não é possível contratar um seguro de valor negativo");
+			}
+			
+			RepositorioContas.atualizarContas();
+		}else {
+			System.out.println("Não é possível contratar um seguro de vida a partir de uma conta poupança");
+		}
 	}
 	
 	private static void limparTela() {

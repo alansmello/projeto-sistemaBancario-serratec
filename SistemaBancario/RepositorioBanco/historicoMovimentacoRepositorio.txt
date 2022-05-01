@@ -148,3 +148,11 @@ saque;9139100740;100.0;c
 saque;9139100740;100.0;c
 saque;9139100740;1000.0;c
 saque;9139100740;1000.0;c
+saque;91;100.0;c
+saque;91;100.0;c
+saque;91;100.0;c
+deposito;91;1000.0;c
+segurovida;91;-4.0;c
+segurovida;91;-10.0;c
+segurovida;91;1000.0;c
+segurovida;91;1000.0;c

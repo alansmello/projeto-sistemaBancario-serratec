@@ -21,6 +21,7 @@ import br.com.serratec.entidade.usuarios.Diretor;
 import br.com.serratec.entidade.usuarios.Gerente;
 import br.com.serratec.entidade.usuarios.Presidente;
 import br.com.serratec.entidade.usuarios.Usuario;
+import interfaces.RelatoriosFuncionarios;
 
 public class SistemaInterno {
 	public static void main(String[] args) {
@@ -139,8 +140,55 @@ public class SistemaInterno {
 				System.out.println("2 - Mostrar saldo");
 				System.out.println("3 - Relatório de tributação da conta corrente");
 				System.out.println("4 - Simulação de rendimento da poupança");
-				System.out.println("5 - Quantidade de contas da agência");
-				System.out.println("6 - Informações dos clientes do sistema");
+				System.out.println("5 - Informações dos clientes do sistema");
+				System.out.println("6 - Finalizar programa");
+				System.out.println("==========================================\n");
+				System.out.print("Digite uma das opcoes acima: ");
+				opcao = leitor.nextInt();
+				leitor.nextLine();
+
+				switch (opcao) {
+				case 1:
+					movimentacaoMenu(leitor, conta);
+					break;
+				case 2:
+					mostrarSaldo(conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
+					break;
+				case 3:
+					imprimirRelatorioTributos(conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
+					break;
+				case 4:
+					imprimirRelatorioRendPoupanca(leitor, conta);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
+					break;
+				case 5:
+					limparTela();
+					((RelatoriosFuncionarios)usuario).criaRelatorioDiretor();
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
+					break;
+				case 6:
+					System.out.println("Programa finalizado");
+					System.exit(0);
+				default:
+
+					break;
+				}
+			} else if (usuario instanceof Presidente) {
+				int opcao;
+
+				System.out.println("============== MENU INICIAL ==============");
+				System.out.println("1 - Menu de Movimentação");
+				System.out.println("2 - Mostrar saldo");
+				System.out.println("3 - Relatório de tributação da conta corrente");
+				System.out.println("4 - Simulação de rendimento da poupança");
+				System.out.println("5 - Informações dos clientes do sistema");
+				System.out.println("6 - Capital total armazenado no banco");
 				System.out.println("7 - Finalizar programa");
 				System.out.println("==========================================\n");
 				System.out.print("Digite uma das opcoes acima: ");
@@ -167,73 +215,21 @@ public class SistemaInterno {
 					leitor.nextLine();
 					break;
 				case 5:
-					mostraRelatorioGerente(usuario);
+					limparTela();
+					((RelatoriosFuncionarios)usuario).criaRelatorioDiretor();
 					System.out.println("Pressione ENTER para continuar");
 					leitor.nextLine();
 					break;
 				case 6:
-					
-					break;
-				case 7:
-					System.out.println("Programa finalizado");
-					System.exit(0);
-				default:
-
-					break;
-				}
-			} else if (usuario instanceof Presidente) {
-				int opcao;
-
-				System.out.println("============== MENU INICIAL ==============");
-				System.out.println("1 - Menu de Movimentação");
-				System.out.println("2 - Mostrar saldo");
-				System.out.println("3 - Relatório de tributação da conta corrente");
-				System.out.println("4 - Simulação de rendimento da poupança");
-				System.out.println("5 - Quantidade de contas da agência");
-				System.out.println("6 - Informações dos clientes do sistema");
-				System.out.println("7 - Capital total armazenado no banco");
-				System.out.println("8 - Finalizar programa");
-				System.out.println("==========================================\n");
-				System.out.print("Digite uma das opcoes acima: ");
-				opcao = leitor.nextInt();
-				leitor.nextLine();
-
-				switch (opcao) {
-				case 1:
-					movimentacaoMenu(leitor, conta);
-					break;
-				case 2:
-					mostrarSaldo(conta);
-					System.out.println("Pressione ENTER para continuar");
-					leitor.nextLine();
-					break;
-				case 3:
-					imprimirRelatorioTributos(conta);
-					System.out.println("Pressione ENTER para continuar");
-					leitor.nextLine();
-					break;
-				case 4:
-					imprimirRelatorioRendPoupanca(leitor, conta);
-					System.out.println("Pressione ENTER para continuar");
-					leitor.nextLine();
-					break;
-				case 5:
-					mostraRelatorioGerente(usuario);
-					System.out.println("Pressione ENTER para continuar");
-					leitor.nextLine();
-					break;
-				case 6:
-
-					break;
-				case 7:
 					limparTela();
 					((Presidente) usuario).criaRelatorioPresidente();
 					System.out.println("Pressione ENTER para continuar");
 					leitor.nextLine();
 					break;
-				case 8:
+				case 7:
 					System.out.println("Programa finalizado");
 					System.exit(0);
+					break;
 				default:
 
 					break;

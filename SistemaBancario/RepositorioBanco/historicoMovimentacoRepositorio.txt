@@ -158,3 +158,6 @@ segurovida;91;1000.0;c
 segurovida;91;1000.0;c
 saque;91;100.0;c
 segurovida;91;1000.0;c
+saque;90;100.0;c
+deposito;90;1000.0;c
+transferencia;90;1000.0;c;91

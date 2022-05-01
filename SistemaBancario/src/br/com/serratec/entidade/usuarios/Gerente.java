@@ -6,8 +6,9 @@ import java.time.format.DateTimeFormatter;
 
 import br.com.serratec.entidade.enums.TipoCargo;
 import br.com.serratec.entidade.repositorios.RepositorioContas;
+import interfaces.RelatoriosFuncionarios;
 
-public class Gerente extends Funcionario {
+public class Gerente extends Funcionario implements RelatoriosFuncionarios{
 
 	protected int agencia;
 	protected final TipoCargo cargo = TipoCargo.GERENTE;

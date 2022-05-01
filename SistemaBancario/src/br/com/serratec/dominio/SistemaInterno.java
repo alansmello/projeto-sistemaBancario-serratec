@@ -120,7 +120,9 @@ public class SistemaInterno {
 					leitor.nextLine();
 					break;
 				case 5:
-					
+					mostraRelatorioGerente(usuario);
+					System.out.println("Pressione ENTER para continuar");
+					leitor.nextLine();
 					break;
 				case 6:
 					System.out.println("Programa finalizado");
@@ -360,6 +362,16 @@ public class SistemaInterno {
 			RepositorioContas.atualizarContas();
 		} else {
 			System.out.println("Não é possível contratar um seguro de vida a partir de uma conta poupança");
+		}
+	}
+	
+	private static void mostraRelatorioGerente(Usuario usuario) {
+		limparTela();
+		
+		try {
+			((Gerente)usuario).criaRelatorioGerente();
+		} catch (IOException e) {
+			System.out.println("Erro ao ler arquivo de contas. Verifique as permissões");
 		}
 	}
 

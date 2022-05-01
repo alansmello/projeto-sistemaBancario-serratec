@@ -1,9 +1,8 @@
 package br.com.serratec.entidade.usuarios;
 
 import br.com.serratec.entidade.enums.TipoCargo;
-import br.com.serratec.entidade.interfaces.RelatorioDiretorPresidente;
 
-public class Diretor extends Funcionario implements RelatorioDiretorPresidente {
+public class Diretor extends Funcionario{
 
 	     protected final TipoCargo cargo = TipoCargo.DIRETOR;
 

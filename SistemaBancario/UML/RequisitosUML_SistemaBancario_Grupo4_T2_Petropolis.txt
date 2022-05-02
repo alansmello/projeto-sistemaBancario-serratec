@@ -1,0 +1,76 @@
+Sistema Bancário
+
+Requisitos Funcionais
+----------------------
+
+* O sistema deve possibilitar o acesso pelo usuário no menu inicial através do login com senha e CPF;
+* O sistema deve possibilitar a identificação, no momento do login, se o usuário é Cliente, Gerente, Diretor ou Presidente.
+* O sistema deve apresentar, após o login, um menu interativo com opções específicas para cada tipo de usuário:
+	
+Menu Cliente:
+	Movimentação na conta (saque, depósito,transferência)
+	Relatórios 
+		.Saldo
+		.Tributação da conta corrente: 
+			Total gasto nas operações até o momento
+			Valores cobrados por cada operação bancária
+		.Rendimento de poupança
+			Simulaçao de rendimento segundo prazo e valor informado pelo cliente
+	Contratação Seguro de Vida 
+
+Menu Gerente:
+	- Movimentação na conta (saque, depósito e transferência)
+	- Relatórios 
+		.Saldo
+		.Tributação da conta corrente: 
+			Total gasto nas operações até o momento
+			Valores cobrados por cada operação bancária
+		.Rendimento de poupança
+			Simulaçao de rendimento segundo prazo e valor informado pelo cliente
+		.Relatório do número contas na mesma agência em que este gerente trabalha
+
+Menu Diretor:
+	- Movimentação na conta (saque, depósito e transferência)
+	- Relatórios 
+		.Saldo
+		.Tributação da conta corrente: 
+			Total gasto nas operações até o momento
+			Valores cobrados por cada operação bancária
+		.Rendimento de poupança
+			Simulaçao de rendimento segundo prazo e valor informado pelo cliente
+		.Listagem de nome, CPF, e Agencia de todos os clientes do sistema em ordem alfabética.
+		
+	
+
+Menu Presidente:
+	- Movimentação na conta (saque, depósito e transferência)
+	- Relatórios 
+		.Saldo
+		.Tributação da conta corrente: 
+			Total gasto nas operações até o momento
+			Valores cobrados por cada operação bancária
+		.Rendimento de poupança
+			Simulaçao de rendimento segundo prazo e valor informado pelo cliente
+		.Listagem de nome, CPF, e Agencia de todos os clientes do sistema em ordem alfabética.
+		
+		.Valor total Capital armazenado no banco
+
+
+Requisitos Não-Funcionais
+----------------------
+* O sistema deve utilizar a linguagem Java;
+* O sistema deve ser populado com valores através da leitura de um arquivo texto;
+* Toda Operação Bancária (Saque, Depósito e Transferência) deverá ser registrada em um arquivo texto de saída que
+ armazena as operações realizadas durante aquela execução do sistema;
+* Todo relatório gerado deve ser registrado em um arquivo texto de saída individual;
+
+
+Regras de Negócio
+----------------------
+* O login do usuário (Cliente/Funcionário) deve ser feito através do cpf e senha;
+* Para tributações, em caso de saque ou depósito, o cliente será taxado em R$ 0,10 e, em caso de tranferência, em R$ 0,20;
+* Os valores das taxas cobradas devem ser informadas ao usuário;
+* A contratação do Seguro de Vida gera um débito de 20% do valor contratado como tributo do mesmo;
+
+
+

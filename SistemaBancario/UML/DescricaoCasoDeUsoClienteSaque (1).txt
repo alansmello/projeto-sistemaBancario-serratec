@@ -1,0 +1,56 @@
+Caso de Uso: Realizar Saque
+
+Ator Principal: Cliente
+
+Interessados e Interesses:
+
+• Cliente: deseja sacar o valor informado da sua conta e obter um saldo seguro/consistente.
+
+• Funcionario(Gerente/Diretor/Presidente): deseja entregar o valor ao cliente de forma segura e manter o saldo consistente
+para realização de relatórios.
+
+Pré-Condições: O Cliente está identificado e autenticado.
+
+Pós-Condições: a movimentação saque é registrada no sistema. 
+		    O valor é retirado da conta e o subtraído do saldo.
+
+Cenário de Sucesso Principal:
+
+1. O Cliente informa seu CPF ao sistema;
+2. O Sistema valida o CPF;
+3. O Cliente informa sua senha ao sistema;
+4. O Sistema valida a senha, autenticando o login, exibe mensagem de boas vindas com o nome do Cliente 
+   e oferece o menu de opções;
+5. O Cliente seleciona a opção Movimentação --> Saque e informa o valor a ser sacado ;
+6. O Sistema realiza a transação e atualiza o saldo;
+7. O Cliente recebe o valor;
+8. O Sistema informa que a transação foi realizada e espera uma interação do usuário;
+9. O Cliente pressiona ENTER e retorna ao menu Novimentação;
+10.O Sistema espera uma interação do usuário;
+11. O usuário seleciona o opção Sair;
+12. O Sistema é encerrado.
+
+
+Fluxos Alternativos:
+
+1. O sistema não encontra no cadastro o CPF informado, exibe uma notificação ao Cliente
+   e solicita que o CFP seja inserido novamente;
+
+3. O sistema não encontra no cadastro a senha informada, exibe uma notificação ao Cliente
+   e solicita que a senha seja inserida novamente;
+
+6. O Sistema não realiza o saque
+  6.1 O Sistema verifica se o valor informado pelo Cliente é negativo e retorna uma mensangem
+  informando que o "Não é possível sacar um valor negativo";
+
+  6.2 O Sistema verifica se o saldo disponível é suficiente para realizar a transação
+  (valor informado acrescido da taxa de saque) e retorna uma mensangem informando que o "Saldo não é suficiente".
+
+
+
+
+
+
+
+
+

@@ -30,13 +30,14 @@ public abstract class Usuario implements Comparable<Usuario>{
 		return senha;
 	}
 
-  public void autentica(String senha) throws senhaInvalidaException {
+  	public void autentica(String senha) throws senhaInvalidaException {
 		
 		if(!this.senha.equals(senha)) {
 			throw new senhaInvalidaException();
 		}
 	}
 
+	// Muito bom. Fizeram a abordagem mais simples
 	@Override
 	public int compareTo(Usuario o) {
 		// TODO Auto-generated method stub

@@ -90,6 +90,7 @@ public class RepositorioUsuarios {
 		return usuarioPesquisado;
 	}
 
+	// Bem legal, pessoal. Uma abordagem diferente do padrão
 	public static TreeMap<String, Usuario> listaAlfabetica() {
 		return clienteLista;
 	}

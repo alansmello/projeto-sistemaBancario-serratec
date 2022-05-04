@@ -14,7 +14,7 @@ import br.com.serratec.entidade.excecoes.ValorNegativoException;
 import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
 
 public class ContaPoupanca extends Conta {
-    // Esse atributo poderia ser estático já que todas as contas poupança vão ter tipo 'c'
+    // Esse atributo poderia ser estático já que todas as contas poupança vão ter tipo 'p'
     // Poderia ser também um enum para limitar melhor as opções
 	private final char tipoConta = 'p';
 	private int aniversarioConta;

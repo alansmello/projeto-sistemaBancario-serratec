@@ -19,6 +19,8 @@ import br.com.serratec.entidade.repositorios.RepositorioSeguroVida;
 import br.com.serratec.entidade.repositorios.RepositorioUsuarios;
 
 public class ContaCorrente extends Conta {
+	// Esse atributo poderia ser estático já que todas as contas correntes vão ter tipo 'c'
+	// Poderia ser também um enum para limitar melhor as opções
 	private final char tipoConta = 'c';
 	private static int qtdContas = 0;
 
@@ -49,6 +51,8 @@ public class ContaCorrente extends Conta {
 		}
 	}
 
+	// Seria bom se essa função fosse quebrada em funções menores e a parte de interação com arquivos
+	// ficasse em outro arquivo para isolar responsabilidades
 	public void relatorioTributos() throws IOException, CpfInexistenteException {
 
 		LocalDateTime hoje = LocalDateTime.now();
